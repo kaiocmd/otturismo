@@ -25,39 +25,7 @@ function gerarLinkWhatsApp(destino) {
    Para adicionar/editar pacotes, mexa apenas neste array.
 ═══════════════════════════════════════════════════════════ */
 const pacotes = [
-  {
-    destino: "Festival de inverno",
-    estado: "PE",
-    imagem: "images/julho.png",
-    duracao: "24/07 e 25/07",
-    preco: "R$ 300,00",
-    badge: "28/07",
-    descricao: "Venha viver a magia do Festival de Inverno de Garanhuns em uma experiência completa e inesquecível!",
-    inclusos: ["Hospedagem inclusa","Transporte ida e volta","Visita a vários pontos turísticos","Guia credenciado acompanhando o grupo","Seguro viagem e transporte","Brindes exclusivos","Pulseiras de identificação"],
-    esgotado: true
-  },
-  {
-    destino: "Vale do Catimbau",
-    estado: "PE",
-    imagem: "images/agosto.png",
-    duracao: "29/08 e 30/08",
-    preco: "R$ 650,00",
-    badge: "29/08",
-    descricao: "Prepare-se para viver dias inesquecíveis entre trilhas, paisagens deslumbrantes e cenários de tirar o fôlego no incrível Vale do Catimbau.",
-    inclusos: ["Hospedagem inclusa","As 4 principais refeições inclusas","Transporte ida e volta","Taxas das trilhas inclusas","Guia credenciado acompanhando o grupo","Seguro viagem e transporte","Brindes exclusivos","Pulseiras de identificação","Luau especial","Ponto de hidratação durante a programação"],
-    esgotado: true
-  },
-  {
-    destino: "São Benedito do Sul",
-    estado: "PE",
-    imagem: "images/setembro.png",
-    duracao: "13/09",
-    preco: "R$ 230,00",
-    badge: "12/09",
-    descricao: "Prepare-se para uma experiência inesquecível em meio à natureza, com uma trilha que passa por 7 lindas cachoeiras, todas com parada para banho e momentos de muita diversão e contemplação.",
-    inclusos: ["Café da manhã","Almoço","Transporte ida e volta","Taxas das trilhas inclusas","Guia credenciado acompanhando o grupo","Seguro viagem e transporte","Brindes exclusivos","Pulseiras de identificação"],
-    esgotado: false
-  },
+
   {
     destino: "Bonito",
     estado: "PE",
@@ -96,7 +64,7 @@ const pacotes = [
     estado: "PE",
     imagem: "images/dezembro2.png",
     duracao: "05/12 e 06/12",
-    preco: "R$ 650,00",
+    preco: "R$ 660,00",
     badge: "05/12",
     descricao: "Prepare-se para viver dias inesquecíveis entre trilhas, paisagens deslumbrantes e cenários de tirar o fôlego no incrível Vale do Catimbau.",
     inclusos: ["Hospedagem inclusa","As 4 principais refeições inclusas","Transporte ida e volta","Taxas das trilhas inclusas","Guia credenciado acompanhando o grupo","Seguro viagem e transporte","Brindes exclusivos","Pulseiras de identificação","Luau especial","Ponto de hidratação durante a programação"],
@@ -448,6 +416,216 @@ function initAboutGallery() {
   });
 }
 /* ═══════════════════════════════════════════════════════════
+   MÊS DO CLIENTE – vídeo obrigatório + formulário
+═══════════════════════════════════════════════════════════ */
+
+// ⚠️ Cole aqui o ID do vídeo do YouTube (não a URL inteira).
+// Ex: se o link é https://youtu.be/AbCdEfGhIjK, o ID é "AbCdEfGhIjK".
+// Pode ser um vídeo "Não listado" normalmente, não precisa ser público.
+const CLIENT_MONTH_VIDEO_ID = "2WwtwKcUL1c";
+
+// ⚠️ Cole aqui o link do seu Google Forms (o link normal de compartilhar, não precisa ser o de embed)
+const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSeYgCjJ3nRbA2XHQk7NMNI3utjBWlsyI8cA2FUPick_XMqrFg/viewform";
+
+let cmPlayer = null;
+let cmWatchInterval = null;
+let cmMaxTime = 0;      // maior ponto que a pessoa já assistiu de verdade
+let cmDuration = 0;
+let cmUnlocked = false;
+
+// Carrega a API do YouTube (só injeta o script uma vez)
+function loadYouTubeAPI() {
+  const container = document.getElementById("clientMonthPlayer");
+  if (!container) return; // seção não existe nesta página
+
+  if (window.YT && window.YT.Player) {
+    createClientMonthPlayer();
+    return;
+  }
+
+  const tag = document.createElement("script");
+  tag.src = "https://www.youtube.com/iframe_api";
+  document.head.appendChild(tag);
+
+  // Callback global exigido pela API do YouTube
+  window.onYouTubeIframeAPIReady = createClientMonthPlayer;
+}
+
+function createClientMonthPlayer() {
+  cmPlayer = new YT.Player("clientMonthPlayer", {
+    videoId: CLIENT_MONTH_VIDEO_ID,
+    playerVars: {
+      rel: 0,
+      modestbranding: 1,
+      playsinline: 1,
+    },
+    events: {
+      onReady: () => {
+        cmDuration = cmPlayer.getDuration();
+      },
+      onStateChange: onClientMonthStateChange,
+    },
+  });
+}
+
+function onClientMonthStateChange(event) {
+  if (event.data === YT.PlayerState.PLAYING) {
+    if (!cmWatchInterval) {
+      cmWatchInterval = setInterval(checkClientMonthProgress, 500);
+    }
+  } else {
+    clearInterval(cmWatchInterval);
+    cmWatchInterval = null;
+  }
+
+  if (event.data === YT.PlayerState.ENDED) {
+    unlockClientMonthForm();
+  }
+}
+
+// Roda a cada 0.5s enquanto o vídeo está tocando:
+// atualiza a barra de progresso e impede "pular" pra frente (seek).
+function checkClientMonthProgress() {
+  if (!cmPlayer || typeof cmPlayer.getCurrentTime !== "function") return;
+
+  const current = cmPlayer.getCurrentTime();
+  const duration = cmDuration || cmPlayer.getDuration();
+
+  // Se a pessoa arrastou a barra pra frente do que já assistiu, volta.
+  if (current > cmMaxTime + 1.5) {
+    cmPlayer.seekTo(cmMaxTime, true);
+  } else {
+    cmMaxTime = Math.max(cmMaxTime, current);
+  }
+
+  const pct = duration ? Math.min(100, (cmMaxTime / duration) * 100) : 0;
+  const fill = document.getElementById("videoProgressFill");
+  if (fill) fill.style.width = pct + "%";
+
+  // Libera perto do final (98%) pra não travar quem chegou no último segundo
+  if (pct >= 98 && !cmUnlocked) unlockClientMonthForm();
+}
+
+function unlockClientMonthForm() {
+  if (cmUnlocked) return;
+  cmUnlocked = true;
+
+  const wrapper = document.getElementById("clientMonthFormWrapper");
+  const overlay = document.getElementById("formLockOverlay");
+  const hint = document.getElementById("videoHint");
+  const link = document.getElementById("clientMonthFormLink");
+
+  if (wrapper) wrapper.classList.remove("locked");
+  if (overlay) overlay.remove();
+  if (hint) {
+    hint.innerHTML = '<i class="fas fa-check-circle"></i> Vídeo concluído! Formulário liberado 🎉';
+  }
+  if (link) {
+    link.href = GOOGLE_FORM_URL;
+    link.target = "_blank";
+    link.rel = "noopener";
+    link.removeAttribute("aria-disabled");
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MÊS DO CLIENTE – contador regressivo
+═══════════════════════════════════════════════════════════ */
+
+// ⚠️ Data limite. Horário de Recife (-03:00), vale até 23h59 desse dia.
+const CLIENT_MONTH_DEADLINE = new Date("2026-09-27T23:59:59-03:00");
+
+function initClientMonthCountdown() {
+  const box = document.getElementById("clientMonthCountdown");
+  if (!box) return;
+
+  const elDays = document.getElementById("cdDays");
+  const elHours = document.getElementById("cdHours");
+  const elMinutes = document.getElementById("cdMinutes");
+  const elSeconds = document.getElementById("cdSeconds");
+
+  function pad(n) {
+    return String(n).padStart(2, "0");
+  }
+
+  function tick() {
+    const diff = CLIENT_MONTH_DEADLINE.getTime() - Date.now();
+
+    if (diff <= 0) {
+      box.classList.add("ended");
+      elDays.textContent = "00";
+      elHours.textContent = "00";
+      elMinutes.textContent = "00";
+      elSeconds.textContent = "00";
+      clearInterval(cmCountdownInterval);
+      return;
+    }
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((diff / (1000 * 60)) % 60);
+    const seconds = Math.floor((diff / 1000) % 60);
+
+    elDays.textContent = pad(days);
+    elHours.textContent = pad(hours);
+    elMinutes.textContent = pad(minutes);
+    elSeconds.textContent = pad(seconds);
+  }
+
+  tick();
+  cmCountdownInterval = setInterval(tick, 1000);
+}
+
+let cmCountdownInterval = null;
+
+/* ═══════════════════════════════════════════════════════════
+   POP-UP DE ENTRADA – avisa sobre o Mês do Cliente
+═══════════════════════════════════════════════════════════ */
+function initClientMonthPopup() {
+  const overlay = document.getElementById("cmPopupOverlay");
+  const closeBtn = document.getElementById("cmPopupClose");
+  const ctaBtn = document.getElementById("cmPopupCta");
+  const target = document.getElementById("mes-cliente");
+
+  if (!overlay || !target) return;
+
+  // Só mostra 1x por sessão do navegador, pra não incomodar quem já viu
+  if (sessionStorage.getItem("cmPopupShown") === "1") return;
+
+  function showPopup() {
+    overlay.classList.add("visible");
+    sessionStorage.setItem("cmPopupShown", "1");
+  }
+
+  function hidePopup() {
+    overlay.classList.remove("visible");
+  }
+
+  function goToVideo() {
+    hidePopup();
+    const offset = 70; // altura do navbar fixo
+    const top = target.getBoundingClientRect().top + window.scrollY - offset;
+    window.scrollTo({ top, behavior: "smooth" });
+  }
+
+  // Pequeno atraso pra não ser abrupto assim que a página carrega
+  setTimeout(showPopup, 1800);
+
+  if (closeBtn) closeBtn.addEventListener("click", hidePopup);
+  if (ctaBtn) ctaBtn.addEventListener("click", goToVideo);
+
+  // Fecha clicando fora do card
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) hidePopup();
+  });
+
+  // Fecha com a tecla ESC
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") hidePopup();
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════
    INICIALIZAÇÃO
 ═══════════════════════════════════════════════════════════ */
 document.addEventListener("DOMContentLoaded", () => {
@@ -458,6 +636,9 @@ document.addEventListener("DOMContentLoaded", () => {
   initSmoothScroll();
   initFloatButton();
   initAboutGallery();
+  loadYouTubeAPI();
+  initClientMonthCountdown();
+  initClientMonthPopup();
 
   console.log("🏖️ Otturismo – Site carregado com sucesso!");
   console.log(`📱 WhatsApp configurado: +${WHATSAPP_NUMBER}`);

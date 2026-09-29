@@ -84,7 +84,6 @@
       <nav class="nav-links" id="navLinks">
         <a href="#inicio">Início</a>
         <a href="#pacotes">Pacotes</a>
-        <a href="#mes-cliente">Mês do Cliente</a>
         <a href="#sobre">Sobre</a>
         <a href="#faq">FAQ</a>
         <a href="#contato" class="nav-cta">Contato</a>
@@ -166,73 +165,6 @@
 
     <div class="cards-grid" id="cardsGrid">
       <!-- Os cards são gerados pelo JavaScript -->
-    </div>
-  </section>
-
-  <!-- ========== MÊS DO CLIENTE (vídeo + formulário) ========== -->
-  <section class="client-month" id="mes-cliente">
-    <div class="section-header">
-      <span class="section-tag">✦ Benefício Exclusivo</span>
-      <h2 class="section-title">O <span class="highlight">Mês do Cliente</span> chegou!</h2>
-      <p class="section-sub">
-        Assista ao vídeo até o final para liberar o formulário.
-      </p>
-
-      <div class="countdown" id="clientMonthCountdown" aria-live="polite">
-        <div class="countdown-item">
-          <span class="countdown-num" id="cdDays">00</span>
-          <span class="countdown-label">dias</span>
-        </div>
-        <div class="countdown-item">
-          <span class="countdown-num" id="cdHours">00</span>
-          <span class="countdown-label">horas</span>
-        </div>
-        <div class="countdown-item">
-          <span class="countdown-num" id="cdMinutes">00</span>
-          <span class="countdown-label">min</span>
-        </div>
-        <div class="countdown-item">
-          <span class="countdown-num" id="cdSeconds">00</span>
-          <span class="countdown-label">seg</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="client-month-container">
-      <!-- Vídeo -->
-      <div class="client-month-video-wrapper">
-        <div id="clientMonthPlayer"></div>
-        <div class="video-progress-bar">
-          <div class="video-progress-fill" id="videoProgressFill"></div>
-        </div>
-        <p class="video-hint" id="videoHint">
-          <i class="fas fa-lock"></i> Assista até o final para liberar o formulário
-        </p>
-      </div>
-
-      <!-- Formulário (Google Forms) bloqueado -->
-      <div class="client-month-form-wrapper locked" id="clientMonthFormWrapper">
-        <div class="form-lock-overlay" id="formLockOverlay">
-          <i class="fas fa-lock"></i>
-          <p>O formulário libera automaticamente ao final do vídeo</p>
-        </div>
-
-        <div class="client-month-form-embed">
-          <h3>Garanta sua vaga no Mês do Cliente</h3>
-          <p class="client-month-form-desc">
-            Assista ao vídeo até o fim para liberar o botão abaixo e preencher o formulário.
-          </p>
-          <a
-            id="clientMonthFormLink"
-            href="#"
-            class="btn-whatsapp-main full-width client-month-form-btn"
-            aria-disabled="true"
-          >
-            <i class="fas fa-arrow-up-right-from-square"></i>
-            Preencher formulário
-          </a>
-        </div>
-      </div>
     </div>
   </section>
 
@@ -443,24 +375,6 @@
     <i class="fab fa-whatsapp"></i>
     <span class="float-pulse"></span>
   </a>
-
-  <!-- ========== POP-UP MÊS DO CLIENTE ========== -->
-  <div class="cm-popup-overlay" id="cmPopupOverlay">
-    <div class="cm-popup">
-      <button class="cm-popup-close" id="cmPopupClose" aria-label="Fechar">
-        <i class="fas fa-times"></i>
-      </button>
-      <span class="section-tag">✦ Benefício Exclusivo</span>
-      <h3>Chegou o Mês do Cliente!</h3>
-      <p>
-        Assista ao vídeo e garanta sua vaga: massagem, dança e muito mais,
-        tudo de graça no final do mês.
-      </p>
-      <button class="btn-whatsapp-main full-width" id="cmPopupCta">
-        <i class="fas fa-play"></i> Assistir agora
-      </button>
-    </div>
-  </div>
 
   <script src="script.js"></script>
 </body>

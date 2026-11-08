@@ -411,7 +411,7 @@ function initAboutGallery() {
 // ⚠️ Cole aqui o ID do vídeo do YouTube (não a URL inteira).
 // Ex: se o link é https://youtu.be/AbCdEfGhIjK, o ID é "AbCdEfGhIjK".
 // Pode ser um vídeo "Não listado" normalmente, não precisa ser público.
-const CLIENT_MONTH_VIDEO_ID = "https://www.youtube.com/shorts/GBKzUnbQsO8";
+const CLIENT_MONTH_VIDEO_ID = "GBKzUnbQsO8";
 
 // ⚠️ Cole aqui o link do seu Google Forms (o link normal de compartilhar, não precisa ser o de embed)
 const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdtWKqK-rTAB4AAS8VkTtQRxvSrV7BxWiioi3KmM1bxYyPlLA/viewform?usp=preview";

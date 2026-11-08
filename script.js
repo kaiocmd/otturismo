@@ -617,6 +617,31 @@ function initClientMonthPopup() {
 /* ═══════════════════════════════════════════════════════════
    INICIALIZAÇÃO
 ═══════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════
+   CARROSSEL – fotos do último evento
+═══════════════════════════════════════════════════════════ */
+function initEventoCarrossel() {
+  const track = document.getElementById("eventoTrack");
+  const prev = document.getElementById("eventoPrev");
+  const next = document.getElementById("eventoNext");
+  if (!track || !prev || !next) return;
+
+  // Uma "página" = a largura visível do carrossel + o espaço entre as fotos
+  const passo = () => track.clientWidth + (parseFloat(getComputedStyle(track).columnGap) || 0);
+  const noFim = () => track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
+
+  // No fim do carrossel o "próximo" volta ao começo (e o "anterior" vai pro fim)
+  next.addEventListener("click", () => {
+    if (noFim()) track.scrollTo({ left: 0, behavior: "smooth" });
+    else track.scrollBy({ left: passo(), behavior: "smooth" });
+  });
+
+  prev.addEventListener("click", () => {
+    if (track.scrollLeft <= 4) track.scrollTo({ left: track.scrollWidth, behavior: "smooth" });
+    else track.scrollBy({ left: -passo(), behavior: "smooth" });
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   renderizarPacotes();
   renderizarFaq();
@@ -625,6 +650,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initSmoothScroll();
   initFloatButton();
   initAboutGallery();
+  initEventoCarrossel();
   loadYouTubeAPI();
   initClientMonthCountdown();
   initClientMonthPopup();

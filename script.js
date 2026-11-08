@@ -27,17 +27,6 @@ function gerarLinkWhatsApp(destino) {
 const pacotes = [
 
   {
-    destino: "Bonito",
-    estado: "PE",
-    imagem: "images/outubro.png",
-    duracao: "18/10",
-    preco: "R$ 220,00",
-    badge: "18/10",
-    descricao: "Venha viver uma experiência inesquecível em um dos destinos mais encantadores de Pernambuco, com paisagens deslumbrantes e muita aventura!",
-    inclusos: ["Café da manhã","Almoço","Transporte ida e volta","Taxas das trilhas inclusas","Guia credenciado acompanhando o grupo","Seguro viagem e transporte","Brindes exclusivos","Pulseiras de identificação"],
-    esgotado: false
-  },
-  {
     destino: "Ilha Santo Aleixo",
     estado: "PE",
     imagem: "images/novembro.png",

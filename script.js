@@ -522,7 +522,7 @@ function unlockClientMonthForm() {
 ═══════════════════════════════════════════════════════════ */
 
 // ⚠️ Data limite. Horário de Recife (-03:00), vale até 23h59 desse dia.
-const CLIENT_MONTH_DEADLINE = new Date("2026-09-27T23:59:59-03:00");
+const CLIENT_MONTH_DEADLINE = new Date("2026-11-29T23:59:59-03:00");
 
 function initClientMonthCountdown() {
   const box = document.getElementById("clientMonthCountdown");
